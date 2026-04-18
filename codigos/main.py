@@ -9,8 +9,8 @@ from interface_batalha import *
 from personagem import *
 
 # Configurações da Janela
-LARGURA_TELA = 1920
-ALTURA_TELA = 1080
+LARGURA_TELA = 1280
+ALTURA_TELA = 720
 
 TITULO = "Introbattle"
 FPS = 30
@@ -41,8 +41,8 @@ def main():
     estado_atual = ESTADO_MENU
 
     # Fundo do menu
-    img_fundo_selecao = pg.image.load("codigos/imagens/fundo_selecao2.JPG")
-    img_fundo_jogo = pg.transform.scale(pg.image.load('codigos/imagens/paisagem_jogo2.jpg'),(1920,1080))
+    img_fundo_selecao = pg.transform.scale(pg.image.load("imagens/fundo_selecao2.JPG"),(1280,720))
+    img_fundo_jogo = pg.transform.scale(pg.image.load('imagens/paisagem_jogo2.jpg'),(1280,720))
 
     #Superfície de textos:
     superficie_titulo = fonte_titulo.render('Introbattle', True, COR_BRANCA)
@@ -51,17 +51,17 @@ def main():
     
     #Imagem dos personagens:
     
-    img_personagem1 = pg.transform.scale(pg.image.load("codigos/imagens/aisol.png"),(160,270))
-    img_personagem2 = pg.transform.scale(pg.image.load("codigos/imagens/charlem.png"),(160,270))
-    img_personagem3 = pg.transform.scale(pg.image.load("codigos/imagens/catershinja.png"),(160,270))
-    img_personagem4 = pg.transform.scale(pg.image.load("codigos/imagens/lickisweet.png"),(160,270))
-    img_personagem5 = pg.transform.scale(pg.image.load("codigos/imagens/chespult.png"),(160,270))
-    img_personagem6 = pg.transform.scale(pg.image.load("codigos/imagens/weanville.png"),(160,270))
-    img_personagem7 = pg.transform.scale(pg.image.load("codigos/imagens/girapup.png"),(160,270))
-    img_personagem8 = pg.transform.scale(pg.image.load("codigos/imagens/azepius.png"),(160,270))
-    img_inimigo1 = pg.transform.scale(pg.image.load("codigos/imagens/magnegoro.png"),(140,250))
-    img_inimigo2 = pg.transform.scale(pg.image.load("codigos/imagens/karralego.png"),(140,250))
-    img_inimigo3 = pg.transform.scale(pg.image.load("codigos/imagens/duskver.png"),(140,250))
+    img_personagem1 = pg.transform.scale(pg.image.load("imagens/aisol.png"),(160,270))
+    img_personagem2 = pg.transform.scale(pg.image.load("imagens/charlem.png"),(160,270))
+    img_personagem3 = pg.transform.scale(pg.image.load("imagens/catershinja.png"),(160,270))
+    img_personagem4 = pg.transform.scale(pg.image.load("imagens/lickisweet.png"),(160,270))
+    img_personagem5 = pg.transform.scale(pg.image.load("imagens/chespult.png"),(160,270))
+    img_personagem6 = pg.transform.scale(pg.image.load("imagens/weanville.png"),(160,270))
+    img_personagem7 = pg.transform.scale(pg.image.load("imagens/girapup.png"),(160,270))
+    img_personagem8 = pg.transform.scale(pg.image.load("imagens/azepius.png"),(160,270))
+    img_inimigo1 = pg.transform.scale(pg.image.load("imagens/magnegoro.png"),(140,250))
+    img_inimigo2 = pg.transform.scale(pg.image.load("imagens/karralego.png"),(140,250))
+    img_inimigo3 = pg.transform.scale(pg.image.load("imagens/duskver.png"),(140,250))
     
     #Personagens
     personagem1 = Personagem('aisol',img_personagem1,('atq_1','atq_2','atq_3','atq_3'))
