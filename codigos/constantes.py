@@ -1,0 +1,8 @@
+# constants.py
+
+COR_LARANJA = (255, 165, 0)
+COR_BRANCA = (255, 255, 255)
+COR_PRETA = (0, 0, 0)
+COR_VERMELHO = (255,0,0)
+COR_VERDE = (0,255,0)
+COR_CINZA = (211,211,211)
