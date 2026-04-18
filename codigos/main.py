@@ -17,6 +17,9 @@ FPS = 30
 
 
 def main():
+    
+    print("Iniciando o código")
+
     pg.init()
     tela = pg.display.set_mode((LARGURA_TELA, ALTURA_TELA))
     pg.display.set_caption(TITULO)
