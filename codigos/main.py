@@ -7,6 +7,7 @@ from selecao import *
 from pos_selecao import Pos_Selecao
 from interface_batalha import *
 from personagem import *
+from logica_batalha import *
 
 # Configurações da Janela
 LARGURA_TELA = 1280
@@ -17,8 +18,6 @@ FPS = 30
 
 
 def main():
-    
-    print("Iniciando o código")
 
     pg.init()
     tela = pg.display.set_mode((LARGURA_TELA, ALTURA_TELA))
@@ -26,10 +25,10 @@ def main():
     clock = pg.time.Clock()
 
     # Cria fontes
-    fonte_titulo = pg.font.SysFont("Verdana",140)
-    fonte_menu = pg.font.SysFont("Consolas", 90)
-    fonte_selecao = pg.font.SysFont('Consolas',60)
-    fonte_jogo = pg.font.SysFont('Consolas',50)
+    fonte_titulo = pg.font.SysFont("Verdana",90)
+    fonte_menu = pg.font.SysFont("Consolas", 60)
+    fonte_selecao = pg.font.SysFont('Consolas',40)
+    fonte_jogo = pg.font.SysFont('Consolas',35)
     
     # Definição dos Estados do Jogo
     ESTADO_MENU = 0
@@ -51,17 +50,17 @@ def main():
     
     #Imagem dos personagens:
     
-    img_personagem1 = pg.transform.scale(pg.image.load("imagens/aisol.png"),(160,270))
-    img_personagem2 = pg.transform.scale(pg.image.load("imagens/charlem.png"),(160,270))
-    img_personagem3 = pg.transform.scale(pg.image.load("imagens/catershinja.png"),(160,270))
-    img_personagem4 = pg.transform.scale(pg.image.load("imagens/lickisweet.png"),(160,270))
-    img_personagem5 = pg.transform.scale(pg.image.load("imagens/chespult.png"),(160,270))
-    img_personagem6 = pg.transform.scale(pg.image.load("imagens/weanville.png"),(160,270))
-    img_personagem7 = pg.transform.scale(pg.image.load("imagens/girapup.png"),(160,270))
-    img_personagem8 = pg.transform.scale(pg.image.load("imagens/azepius.png"),(160,270))
-    img_inimigo1 = pg.transform.scale(pg.image.load("imagens/magnegoro.png"),(140,250))
-    img_inimigo2 = pg.transform.scale(pg.image.load("imagens/karralego.png"),(140,250))
-    img_inimigo3 = pg.transform.scale(pg.image.load("imagens/duskver.png"),(140,250))
+    img_personagem1 = pg.transform.scale(pg.image.load("imagens/aisol.png"),(110,165))
+    img_personagem2 = pg.transform.scale(pg.image.load("imagens/charlem.png"),(110,165))
+    img_personagem3 = pg.transform.scale(pg.image.load("imagens/catershinja.png"),(110,165))
+    img_personagem4 = pg.transform.scale(pg.image.load("imagens/lickisweet.png"),(110,165))
+    img_personagem5 = pg.transform.scale(pg.image.load("imagens/chespult.png"),(110,165))
+    img_personagem6 = pg.transform.scale(pg.image.load("imagens/weanville.png"),(110,165))
+    img_personagem7 = pg.transform.scale(pg.image.load("imagens/girapup.png"),(110,165))
+    img_personagem8 = pg.transform.scale(pg.image.load("imagens/azepius.png"),(110,165))
+    img_inimigo1 = pg.transform.scale(pg.image.load("imagens/magnegoro.png"),(100,155))
+    img_inimigo2 = pg.transform.scale(pg.image.load("imagens/karralego.png"),(100,155))
+    img_inimigo3 = pg.transform.scale(pg.image.load("imagens/duskver.png"),(100,155))
     
     #Personagens
     personagem1 = Personagem('aisol',img_personagem1,('atq_1','atq_2','atq_3','atq_3'))
@@ -82,7 +81,7 @@ def main():
 
     # Inicializa o menu
     
-    menu = Menu(img_fundo_selecao, ["Jogar", "Opções", "Sair"], fonte_menu, pos_inicial=(100, 440))
+    menu = Menu(img_fundo_selecao, ["Jogar", "Opções", "Sair"], fonte_menu, pos_inicial=(100, 350))
     
     # Inicializa pós_seleção
     
@@ -91,6 +90,10 @@ def main():
     # Inicializa interface do jogo
     
     interface = Interface(img_fundo_jogo,[personagem1,personagem2,personagem3,personagem4,personagem5,personagem6,personagem7,personagem8],[inimigo1,inimigo2,inimigo3],fonte_jogo)
+    
+    # Inicializa a lógica
+    
+    logica = Logica([inimigo1,inimigo2,inimigo3])
 
     rodando = True
     while rodando:
@@ -118,6 +121,7 @@ def main():
                 if escolhido == 1:
                     pos_selecao.img_escolhidos = (selecao.escolhidos()).copy()
                     interface.escolhidos = (selecao.escolhidos()).copy()
+                    logica.escolhidos = (selecao.escolhidos()).copy
                     estado_atual = ESTADO_POS_SELECAO
                 # Permite voltar ao menu com ESC
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
@@ -150,6 +154,10 @@ def main():
             # ESTADO JOGO:
             elif estado_atual == ESTADO_JOGO:
                 escolha = interface.atualizar(evento)
+                if escolha == 0 or escolha == 1:
+                    logica.evento = escolha
+                    logica.atacar
+                    logica.defender
                 # Volta pro menu com tecla ESC
                 if evento.type == pg.KEYDOWN:
                     if evento.key == pg.K_ESCAPE:

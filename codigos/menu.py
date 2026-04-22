@@ -4,7 +4,7 @@ from botao import Botao
 from seta import Seta
 
 class Menu:
-  def __init__(self, img_fundo, opcoes_texto, fonte, pos_inicial=(100, 210), espacamento=120):
+  def __init__(self, img_fundo, opcoes_texto, fonte, pos_inicial=(250, 160), espacamento=120):
     self.img_fundo = img_fundo
 
     self.botoes = [] # Lista com os botões da tela
@@ -46,4 +46,4 @@ class Menu:
 
       if esta_ativo:
         altura_seta = botao.get_altura_centro() - (self.seta.tamanho // 2)
-        self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 30)
+        self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 45)

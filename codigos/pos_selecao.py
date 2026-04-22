@@ -3,7 +3,7 @@ from botao import *
 from seta import *
 from selecao import *
 class Pos_Selecao:
-    def __init__(self, opcoes_texto, fonte, img_escolhidos = (None), pos_inicial=(900, 400), espacamento=120):
+    def __init__(self, opcoes_texto, fonte, img_escolhidos = (None), pos_inicial=(600, 200), espacamento=100):
 
         self.botoes = [] # Lista com os botões da tela
         self.selecionado_index = 0 # Para saber qual botão deve ser exibido com cor diferente e onde a seta deve estar
@@ -38,7 +38,7 @@ class Pos_Selecao:
 
     def desenhar(self, tela):
         """Desenha fundo, botões e seta"""
-        espacamentox = 250
+        espacamentox = 200
         x = 650
         tela.fill(COR_PRETA)
         
@@ -49,9 +49,9 @@ class Pos_Selecao:
 
           if esta_ativo:
             altura_seta = botao.get_altura_centro() - (self.seta.tamanho // 2)
-            self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 30)
+            self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 45)
         for personagem in self.img_escolhidos:
-            tela.blit(personagem.imagem,(x,700))
+            tela.blit(personagem.imagem,(x - 260,400))
             x += espacamentox
     def reiniciar(self):
         self.selecionado_index = 0

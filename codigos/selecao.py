@@ -2,7 +2,7 @@ import pygame as pg
 from botao import *
 from seta import Seta_baixo
 class Selecao:
-    def __init__(self,opcoes_personagens,pos_inicial2=(30,100),espacamentox=(250),espacamentoy=(500)):
+    def __init__(self,opcoes_personagens,pos_inicial2=(30,100),espacamentox=(200),espacamentoy=(250)):
         self.botao_imagem = [] #Lista com opções de personagens
         self.selecionado_index = 0
         self.opcoes_personagens = opcoes_personagens

@@ -38,7 +38,7 @@ class Botao_imagem:
     def __init__(self,img , pos):
         self.img = img
         self.pos = pos
-        self.rect = pg.Rect(self.pos[0],self.pos[1],180,300)
+        self.rect = pg.Rect(self.pos[0],self.pos[1],130,175)
         #indica se o botão está selecionado
         self.marcado = 0
         self.total_marcado = 0

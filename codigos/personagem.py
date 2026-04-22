@@ -1,7 +1,7 @@
 from constantes import *
 
 class Personagem:
-    def __init__(self,nome, imagem,opcoes_ataque,vida_atual=(100),vida_max=(100),ataque=(50),defesa=(50),velocidade =(50)):
+    def __init__(self,nome, imagem,opcoes_ataque,vida_atual=(100),vida_max=(100),ataque=(50),defesa=(50),defesa_reserva=(50),velocidade =(50)):
         self.nome = nome
         self.imagem = imagem
         self.opcoes_ataque = opcoes_ataque
