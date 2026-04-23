@@ -36,6 +36,7 @@ def main():
     ESTADO_OPCOES = 2
     ESTADO_POS_SELECAO = 3
     ESTADO_JOGO = 4
+    ESTADO_ACAO = 5
 
     estado_atual = ESTADO_MENU
 
@@ -63,14 +64,14 @@ def main():
     img_inimigo3 = pg.transform.scale(pg.image.load("imagens/duskver.png"),(100,155))
     
     #Personagens
-    personagem1 = Personagem('aisol',img_personagem1,('atq_1','atq_2','atq_3','atq_3'))
-    personagem2 = Personagem('charlem',img_personagem2,('atq_1','atq_2','atq_3','atq_3'))
-    personagem3 = Personagem('catershinja',img_personagem3,('atq_1','atq_2','atq_3','atq_3'))
-    personagem4 = Personagem('lickisweet',img_personagem4,('atq_1','atq_2','atq_3','atq_3'))
-    personagem5 = Personagem('chespult',img_personagem5,('atq_1','atq_2','atq_3','atq_3'))
-    personagem6 = Personagem('weanville',img_personagem6,('atq_1','atq_2','atq_3','atq_3'))
-    personagem7 = Personagem('girapup',img_personagem7,('atq_1','atq_2','atq_3','atq_3'))
-    personagem8 = Personagem('azepius',img_personagem8,('atq_1','atq_2','atq_3','atq_3'))
+    personagem1 = Personagem('aisol',img_personagem1,50,50,100,60)
+    personagem2 = Personagem('charlem',img_personagem2,50,50,100,40)
+    personagem3 = Personagem('catershinja',img_personagem3,50,50,100,70)
+    personagem4 = Personagem('lickisweet',img_personagem4,50,50,100,50)
+    personagem5 = Personagem('chespult',img_personagem5,50,50,100,50)
+    personagem6 = Personagem('weanville',img_personagem6,50,50,100,50)
+    personagem7 = Personagem('girapup',img_personagem7,50,50,100,50)
+    personagem8 = Personagem('azepius',img_personagem8,50,50,100,50)
     inimigo1 = Inimigos('magnegoro',img_inimigo1)
     inimigo2 = Inimigos('karralego',img_inimigo2)
     inimigo3 = Inimigos('duskver',img_inimigo3)
@@ -93,7 +94,7 @@ def main():
     
     # Inicializa a lógica
     
-    logica = Logica([inimigo1,inimigo2,inimigo3])
+    logica = Logica([inimigo1,inimigo2,inimigo3],img_fundo_jogo,fonte_jogo)
 
     rodando = True
     while rodando:
@@ -120,8 +121,9 @@ def main():
                 escolhido = selecao.atualizar(evento)
                 if escolhido == 1:
                     pos_selecao.img_escolhidos = (selecao.escolhidos()).copy()
-                    interface.escolhidos = (selecao.escolhidos()).copy()
-                    logica.escolhidos = (selecao.escolhidos()).copy
+                    logica.escolhidos = (selecao.escolhidos()).copy()
+                    interface.escolhidos = (logica.atualiza_ordem_turno()).copy()
+                    interface.turnos = logica.turnos.copy()
                     estado_atual = ESTADO_POS_SELECAO
                 # Permite voltar ao menu com ESC
                 if evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
@@ -154,15 +156,35 @@ def main():
             # ESTADO JOGO:
             elif estado_atual == ESTADO_JOGO:
                 escolha = interface.atualizar(evento)
-                if escolha == 0 or escolha == 1:
-                    logica.evento = escolha
-                    logica.atacar
-                    logica.defender
+                logica.evento = escolha
+                if escolha is not None:
+                    estado_atual = ESTADO_ACAO
                 # Volta pro menu com tecla ESC
                 if evento.type == pg.KEYDOWN:
                     if evento.key == pg.K_ESCAPE:
                         estado_atual = ESTADO_MENU
                         selecao.reiniciar()
+            # ESTADO AÇÃO:
+            elif estado_atual == ESTADO_ACAO:
+                logica.atualiza_ordem_turno()
+                morto = logica.atualiza_vivos_e_mortos()
+                for personagem in interface.escolhidos:
+                    if morto == personagem:
+                        interface.escolhidos.remove(personagem)
+                for inimigo in interface.inimigos:
+                    if morto == inimigo:
+                        interface.inimigos.remove(inimigo)
+                decisao = logica.atualizar(evento)
+                if not decisao is None:
+                    if decisao[0]:
+                        interface.turno = (interface.turno + 1) % len(interface.escolhidos)
+                        estado_atual = ESTADO_JOGO
+                    if len(decisao) > 1:
+                        logica.status(decisao[1])
+                # Volta pro estado jogo com tecla ESC
+                if evento.type == pg.KEYDOWN:
+                    if evento.key == pg.K_ESCAPE:
+                        estado_atual = ESTADO_JOGO
 
         # Renderização e atualização lógica dependendo do estado
         if estado_atual == ESTADO_MENU:
@@ -196,6 +218,9 @@ def main():
         elif estado_atual == ESTADO_JOGO:
             tela.fill(COR_PRETA)
             interface.desenhar(tela)
+        elif estado_atual == ESTADO_ACAO:
+            logica.atualiza_ordem_turno()
+            logica.desenhar(tela)
 
         pg.display.flip()
 

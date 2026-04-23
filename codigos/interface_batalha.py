@@ -3,15 +3,16 @@ from botao import *
 from seta import *
 from personagem import *
 class Interface:
-    def __init__(self,img_fundo,personagens,inimigos,fonte,escolhidos=(None),pos_personagem=(50,40),pos_inimigos=(700,40),pos_botoes=(220,625),espacamento_botaox = (225)):
+    def __init__(self,img_fundo,personagens,inimigos,fonte,escolhidos=(None),turnos=(None),pos_personagem=(50,40),pos_inimigos=(700,40),pos_botoes=(220,625),espacamento_botaox = (225)):
         self.img_fundo = img_fundo
         self.personagens = personagens
         self.inimigos = inimigos
         self.escolhidos = escolhidos
+        self.turnos = turnos
         self.fonte = fonte
         self.selecionado_index = 0
         self.seta = Seta()
-        self.seta_baixo = Seta_baixo(COR_VERMELHO,30)
+        self.seta_baixo = Seta_baixo(COR_VERMELHO,25)
         self.pos_personagem = pos_personagem
         self.pos_inimigos = pos_inimigos
         x3,y3 = pos_botoes
@@ -60,10 +61,17 @@ class Interface:
             if esta_ativo:
                 altura_seta = botao.get_altura_centro() - (self.seta.tamanho)
                 self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 45)
-        for i,personagem in enumerate(self.escolhidos):
-            if i == self.turno:
-                tela.blit(personagem.imagem,(50,540))
-                tela.blit(self.fonte.render('Vez de {}'.format(personagem.nome),True,COR_BRANCA),(x4,y4 - 100))
+        if self.turnos[self.turno].verificador:
+            for i,personagem in enumerate(self.turnos):
+                if i == self.turno:
+                    tela.blit(personagem.imagem,(50,540))
+                    tela.blit(self.fonte.render('Vez de {}'.format(personagem.nome),True,COR_BRANCA),(x4,y4 - 100))
+        else:
+            for i,inimigo in enumerate(self.turnos):
+                if i == self.turno:
+                    tela.blit(inimigo.imagem,(50,540))
+                    tela.blit(self.fonte.render('Vez de {}'.format(inimigo.nome),True,COR_BRANCA),(x4,y4 - 100))
+                    tela.blit(self.fonte.render('Escolhendo o alvo',True,COR_BRANCA),(x4,y4))
         for personagem in self.escolhidos:
             tela.blit((self.fonte.render('{}: {}/{}'.format(personagem.nome,personagem.vida_atual,personagem.vida_max),True,COR_BRANCA)),(x4+650,y4-100))
             y4 += 75
