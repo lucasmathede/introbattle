@@ -11,12 +11,17 @@ class Personagem:
         self.vida_atual = vida_max
         self.vida_max = vida_max
         self.velocidade = velocidade
+        if self.vida_atual < 0:
+            self.vida_atual = 0
 class Inimigos:
     def __init__(self,nome, imagem,vida_max=(100),ataque=(50),defesa=(50),velocidade=(50)):
         self.nome = nome
         self.verificador = False
         self.imagem = imagem
         self.defesa = defesa
+        self.ataque = ataque
         self.vida_atual = vida_max
         self.vida_max = vida_max
         self.velocidade = velocidade
+        if self.vida_atual < 0:
+            self.vida_atual = 0

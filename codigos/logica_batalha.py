@@ -3,6 +3,7 @@ from interface_batalha import *
 from selecao import *
 from personagem import *
 from seta import *
+import random
 class Logica:
     def __init__(self,inimigos,img,fonte,escolhidos=([]),escolhidos_em_ordem=([]),evento=(None)):
         self.evento = evento
@@ -19,6 +20,9 @@ class Logica:
         self.seta = Seta_baixo()
         self.seta_baixo = Seta_baixo(COR_VERMELHO,25)
     def atualiza_ordem_turno(self):
+        self.velocidade = []
+        self.turnos = []
+        self.escolhidos_em_ordem = []
         for personagem in self.escolhidos:
             self.velocidade.append(personagem.velocidade)
         for inimigo in self.inimigos:
@@ -34,36 +38,42 @@ class Logica:
                     self.turnos.append(inimigo)
         return self.escolhidos_em_ordem
     def atualiza_vivos_e_mortos(self):
-        for ser_vivo in self.turnos:
+        lista_mortos = []
+        for ser_vivo in self.turnos[:]:
             if ser_vivo.vida_atual <= 0:
                 self.turnos.remove(ser_vivo)
-                return ser_vivo
+                lista_mortos.append(ser_vivo)
+        if self.turno >= len(self.turnos):
+            self.turno = 0
+                
+        return lista_mortos
 
                     
     def atualizar(self,event):
         if self.evento == 1 and self.turnos[self.turno].verificador:
-                if (self.turnos[self.turno]).defesa != (self.turnos[self.turno]).defesa_reserva:
-                    (self.turnos[self.turno]).defesa -= 25
+                (self.turnos[self.turno]).defesa = (self.turnos[self.turno]).defesa_reserva
                 print(self.turnos[self.turno].defesa)
-                self.turnos[self.turno].defesa += 25
-                self.turno = (self.turno + 1) % len(self.turnos)
+                self.turnos[self.turno].defesa += 50
                 print(self.turnos[self.turno].defesa)
                 return [True]
         elif self.evento == 0 and self.turnos[self.turno].verificador:
-                if (self.turnos[self.turno]).defesa != (self.turnos[self.turno]).defesa_reserva:
-                    (self.turnos[self.turno]).defesa -= 25
+                (self.turnos[self.turno]).defesa != (self.turnos[self.turno]).defesa_reserva
                 if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_DOWN:
+                    if event.key == pg.K_DOWN and self.turnos:
                         self.alvo = (self.alvo + 1) % len(self.inimigos)
-                    elif event.key == pg.K_UP:
+                    elif event.key == pg.K_UP and self.turnos:
                         self.alvo = (self.alvo - 1) % len(self.inimigos)
-                    elif event.key == pg.K_RETURN:
-                        self.turno = (self.turno + 1) % len(self.turnos)
+                    elif event.key == pg.K_RETURN and self.turnos:
                         return [True,self.alvo]
         elif not self.turnos[self.turno].verificador:
-            if event.key == pg.K_RETURN:
-                self.turnos[0].vida_atual -= 10
-                self.turno = (self.turno + 1) % len(self.turnos)
+            alvo = random.choice(self.escolhidos)
+            if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
+                for personagem in self.turnos:
+                    if personagem.verificador:
+                        if personagem == alvo:
+                            personagem.vida_atual -= int(((self.turnos[self.turno].ataque / 50 * 10) / (personagem.defesa / 50)))
+                            break
+                return [False]
  
     def retorna_turno(self):
         return self.turno
@@ -90,31 +100,32 @@ class Logica:
                     tela.blit(inimigo.imagem,(50,540))
                     tela.blit(self.fonte.render('Vez de {}'.format(inimigo.nome),True,COR_BRANCA),(x4,y4 - 100))
                     tela.blit(self.fonte.render('Escolhendo o alvo',True,COR_BRANCA),(x4,y4))
-        for personagem in self.escolhidos:
+        for personagem in self.escolhidos_em_ordem:
             tela.blit((self.fonte.render('{}: {}/{}'.format(personagem.nome,personagem.vida_atual,personagem.vida_max),True,COR_BRANCA)),(x4+650,y4-100))
             y4 += 75
-        for i,personagem in enumerate(self.escolhidos_em_ordem):
-            tela.blit((pg.transform.scale(personagem.imagem,(100,155))),(x1,y1))
-            if i == self.turno:
-                # largura = ponto inicial + metade da largura da imagem
-                largura_seta = x1 + 50
-                self.seta_baixo.desenhar(tela, largura_seta, y1-30)
-            if x1 == 50:
-                x1 += 150
-                y1 += 140
+        for i,personagem in enumerate(self.turnos):
+            if personagem.verificador:
+                tela.blit((pg.transform.scale(personagem.imagem,(100,155))),(x1,y1))
+                if i == self.turno:
+                    # largura = ponto inicial + metade da largura da imagem
+                    largura_seta = x1 + 50
+                    self.seta_baixo.desenhar(tela, largura_seta, y1-30)
+                if x1 == 50:
+                    x1 += 150
+                    y1 += 140
+                else:
+                    x1 -= 150
+                    y1 += 140
             else:
-                x1 -= 150
-                y1 += 140
-        for i,inimigo in enumerate(self.inimigos):
-            tela.blit(inimigo.imagem,(x2,y2))
-            if x2 == 700:
-                x2 -= 150
-                y2 += 140
-            else:
-                x2 += 150
-                y2 += 140
-            tela.blit((self.fonte.render('{}: {}/{}'.format(inimigo.nome,inimigo.vida_atual,inimigo.vida_max),True,COR_BRANCA)),(x3,y3))
-            y3 += 100
+                tela.blit(personagem.imagem,(x2,y2))
+                if x2 == 700:
+                    x2 -= 150
+                    y2 += 140
+                else:
+                    x2 += 150
+                    y2 += 140
+                tela.blit((self.fonte.render('{}: {}/{}'.format(personagem.nome,personagem.vida_atual,personagem.vida_max),True,COR_BRANCA)),(x3,y3))
+                y3 += 100
         x,y = self.pos_seta
         if self.evento == 0:
             for i in range(len(self.inimigos)):
@@ -125,5 +136,16 @@ class Logica:
                     else:
                         self.seta.desenhar(tela,x - 150,y + self.alvo * 150)
     def status(self,alvo):
+        print(alvo)
         if self.turnos[self.turno].verificador:
             self.inimigos[alvo].vida_atual -= int(((self.turnos[self.turno].ataque / 50 * 10) / (self.inimigos[alvo].defesa / 50)))
+    def reiniciar(self):
+        for personagem in self.escolhidos:
+            personagem.vida_atual = personagem.vida_max
+        for personagem in self.inimigos:
+            personagem.vida_atual = personagem.vida_max
+        self.escolhidos = []
+        self.escolhidos_em_ordem = []
+        self.turnos = []
+        self.velocidade = []
+        self.turno = 0

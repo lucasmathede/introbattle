@@ -7,6 +7,7 @@ class Interface:
         self.img_fundo = img_fundo
         self.personagens = personagens
         self.inimigos = inimigos
+        self.inimigos_salvos = (inimigos).copy()
         self.escolhidos = escolhidos
         self.turnos = turnos
         self.fonte = fonte
@@ -55,12 +56,13 @@ class Interface:
         x2,y2 = self.pos_inimigos
         x3,y3 = (925,30)
         x4,y4 = self.pos_botoes
-        for i, botao in enumerate(self.acoes): # Itera com indíce e botão
-            esta_ativo = i == self.selecionado_index
-            botao.desenhar(tela, esta_ativo)
-            if esta_ativo:
-                altura_seta = botao.get_altura_centro() - (self.seta.tamanho)
-                self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 45)
+        if self.turnos[self.turno].verificador:
+            for i, botao in enumerate(self.acoes): # Itera com indíce e botão
+                esta_ativo = i == self.selecionado_index
+                botao.desenhar(tela, esta_ativo)
+                if esta_ativo:
+                    altura_seta = botao.get_altura_centro() - (self.seta.tamanho)
+                    self.seta.desenhar(tela, botao.pos[0] - 30, altura_seta - 45)
         if self.turnos[self.turno].verificador:
             for i,personagem in enumerate(self.turnos):
                 if i == self.turno:
@@ -75,25 +77,27 @@ class Interface:
         for personagem in self.escolhidos:
             tela.blit((self.fonte.render('{}: {}/{}'.format(personagem.nome,personagem.vida_atual,personagem.vida_max),True,COR_BRANCA)),(x4+650,y4-100))
             y4 += 75
-        for i,personagem in enumerate(self.escolhidos):
-            tela.blit((pg.transform.scale(personagem.imagem,(100,155))),(x1,y1))
-            if i == self.turno:
-                # largura = ponto inicial + metade da largura da imagem
-                largura_seta = x1 + 50
-                self.seta_baixo.desenhar(tela, largura_seta, y1-30)
-            if x1 == self.pos_personagem[0]:
-                x1 += 150
-                y1 += 140
+        for i,personagem in enumerate(self.turnos):
+            if personagem.verificador:
+                tela.blit((pg.transform.scale(personagem.imagem,(100,155))),(x1,y1))
+                if personagem.verificador:
+                    if i == self.turno:
+                        # largura = ponto inicial + metade da largura da imagem
+                        largura_seta = x1 + 50
+                        self.seta_baixo.desenhar(tela, largura_seta, y1-30)
+                if x1 == self.pos_personagem[0]:
+                    x1 += 150
+                    y1 += 140
+                else:
+                    x1 -= 150
+                    y1 += 140
             else:
-                x1 -= 150
-                y1 += 140
-        for i,inimigo in enumerate(self.inimigos):
-            tela.blit(inimigo.imagem,(x2,y2))
-            if x2 == self.pos_inimigos[0]:
-                x2 -= 150
-                y2 += 140
-            else:
-                x2 += 150
-                y2 += 140
-            tela.blit((self.fonte.render('{}: {}/{}'.format(inimigo.nome,inimigo.vida_atual,inimigo.vida_max),True,COR_BRANCA)),(x3,y3))
-            y3 += 100
+                tela.blit(personagem.imagem,(x2,y2))
+                if x2 == self.pos_inimigos[0]:
+                    x2 -= 150
+                    y2 += 140
+                else:
+                    x2 += 150
+                    y2 += 140
+                tela.blit((self.fonte.render('{}: {}/{}'.format(personagem.nome,personagem.vida_atual,personagem.vida_max),True,COR_BRANCA)),(x3,y3))
+                y3 += 100
